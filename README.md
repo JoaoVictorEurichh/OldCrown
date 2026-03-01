@@ -1,36 +1,43 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+## Old Crown – Sistema de Agendamento para Barbearia
 
-## Getting Started
+# Sobre o Projeto
 
-First, run the development server:
+O Old Crown é um sistema web de agendamento para barbearia.
+O objetivo é permitir que clientes agendem horários online e que a barbearia organize seus atendimentos de forma prática
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Problema
+Muitas barbearias utilizam agenda em WhatsApp para marcar horários, o que pode causar:
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- Conflito de horários
+- Falta de organização
+- Dificuldade no controle de clientes
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Solução
+Criar um site onde: 
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- O cliente escolhe o serviço
+- Agendamento online de horários
+- A barbearia gerencia os horários pelo Site
 
-## Learn More
+## Protótipo
+Protótipo desenvolvido no Figma.
+Link: https://www.figma.com/design/HW5unbWaDvy55Yqpm6YMtf/Barber?node-id=11-4349&t=ugXM16R6oB9Mfw4P-1
 
-To learn more about Next.js, take a look at the following resources:
+## Tecnologias Utilizadas
+-Next.js
+-Tailwind
+-TypeScript
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Como rodar o projeto
+Comandos para Instalar dependências
+-npm install
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Comando para Rodar o projeto
+-npm run dev
 
-## Deploy on Vercel
+Acesse em: http://localhost:3000
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Desenvolvedores 
+- João Victor Eurich Github: https://github.com/JoaoVictorEurichh
+- Allan Lemos Github: https://github.com/Allanclms
+- Roger Felipe Farias da Maia Github: https://github.com/rogerfelipe10
