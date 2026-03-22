@@ -22,7 +22,7 @@ Criar um site onde:
 ## Protótipo
 Protótipo desenvolvido no Figma.
 
-- Link: https://www.figma.com/design/HW5unbWaDvy55Yqpm6YMtf/Barber?node-id=11-4349&t=ugXM16R6oB9Mfw4P-1
+Link: https://www.figma.com/design/HW5unbWaDvy55Yqpm6YMtf/Barber?node-id=11-4349&t=ugXM16R6oB9Mfw4P-1
 
 ## Tecnologias Utilizadas
 - Next.js
