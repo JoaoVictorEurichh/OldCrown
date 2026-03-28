@@ -1,0 +1,19 @@
+{
+  "appointments": [
+    {
+      "clientName": "joao",
+      "date": "2026-03-28",
+      "time": "21:00",
+      "service": "Corte + Barba",
+      "id": "7ffYJkkidG8"
+    },
+    {
+      "clientName": "felipe",
+      "date": "2026-03-28",
+      "time": "20:00",
+      "service": "Corte",
+      "id": "OmBvwFNpYS8"
+    }
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
+}
