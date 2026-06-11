@@ -1,15 +1,12 @@
 import { Module } from '@nestjs/common';
+import { AppController } from './app.controller';
 import { PrismaModule } from './prisma/prisma.module';
 import { UsersModule } from './users/users.module';
-<<<<<<< HEAD
-
-@Module({
-  imports: [PrismaModule, UsersModule],
-=======
 import { AuthModule } from './auth/auth.module';
+import { AppointmentsModule } from './appointments/appointments.module';
 
 @Module({
-  imports: [PrismaModule, UsersModule, AuthModule],
->>>>>>> 0940b38 (Initial commit)
+  imports: [PrismaModule, UsersModule, AuthModule, AppointmentsModule],
+  controllers: [AppController],
 })
 export class AppModule {}
