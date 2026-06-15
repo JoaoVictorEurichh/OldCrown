@@ -53,11 +53,9 @@ export class AppointmentsService {
     const isAdmin = jwtUser.role === 'ADMIN';
     const isBarber = jwtUser.role === 'BARBER';
 
-    // Barbeiro cria apenas para si mesmo
     if (isBarber) dto = { ...dto, barber: jwtUser.name ?? dto.barber };
 
     if (!isAdmin && !isBarber) {
-      // Cliente só pode ter 1 agendamento ativo
       const existing = await this.prisma.simpleAppointment.findFirst({
         where: { userId: jwtUser.sub, status: { not: 'CANCELED' } },
       });
@@ -67,7 +65,6 @@ export class AppointmentsService {
         );
       }
 
-      // Nome vem do próprio cadastro do cliente
       const user = await this.prisma.user.findUnique({
         where: { id: jwtUser.sub },
         select: { name: true },
