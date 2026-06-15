@@ -21,84 +21,35 @@ enum AppointmentStatus {
 }
 
 model User {
-  id           String        @id @default(uuid())
-  name         String
-  email        String        @unique
-  password     String
-  role         Role          @default(CUSTOMER)
-
-  barber       Barber?
-  appointments Appointment[]
-
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @updatedAt
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  password  String
+  role      Role     @default(CUSTOMER)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
-model Barbershop {
-  id            String         @id @default(uuid())
-  name          String
-  phone         String?
-  address       String?
-
-  barbers       Barber[]
-  services      Service[]
-  appointments  Appointment[]
-
-  createdAt     DateTime       @default(now())
+model SimpleAppointment {
+  id         String            @id @default(uuid())
+  clientName String
+  date       String
+  time       String
+  service    String
+  barber     String            @default("João")
+  status     AppointmentStatus @default(PENDING)
+  userId     String?
+  createdAt  DateTime          @default(now())
+  updatedAt  DateTime          @updatedAt
 }
 
-model Barber {
-  id             String        @id @default(uuid())
+model SlotBloqueado {
+  id        String   @id @default(uuid())
+  date      String
+  time      String
+  barber    String
+  motivo    String?
+  createdAt DateTime @default(now())
 
-  userId         String        @unique
-  user           User          @relation(fields: [userId], references: [id])
-
-  barbershopId   String
-  barbershop     Barbershop    @relation(fields: [barbershopId], references: [id])
-
-  specialty      String?
-
-  appointments   Appointment[]
-
-  createdAt      DateTime      @default(now())
-}
-
-model Service {
-  id             String         @id @default(uuid())
-
-  name           String
-  description    String?
-  price          Float
-  duration       Int
-
-  barbershopId   String
-  barbershop     Barbershop     @relation(fields: [barbershopId], references: [id])
-
-  appointments   Appointment[]
-
-  createdAt      DateTime       @default(now())
-}
-
-model Appointment {
-  id              String               @id @default(uuid())
-
-  customerId      String
-  customer        User                 @relation(fields: [customerId], references: [id])
-
-  barberId        String
-  barber          Barber               @relation(fields: [barberId], references: [id])
-
-  serviceId       String
-  service         Service              @relation(fields: [serviceId], references: [id])
-
-  barbershopId    String
-  barbershop      Barbershop           @relation(fields: [barbershopId], references: [id])
-
-  date            DateTime
-
-  status          AppointmentStatus    @default(PENDING)
-
-  notes           String?
-
-  createdAt       DateTime             @default(now())
+  @@unique([date, time, barber])
 }
