@@ -133,25 +133,6 @@ export default function Editar() {
       {/* Admin / Barbeiro: seletor de agendamento a mover */}
       {canManageClients && (
         <div className="space-y-3 max-w-md">
-          <div className="space-y-2">
-            <p className="text-gray-400 text-sm">Barbeiro:</p>
-            <div className="flex gap-3">
-              {BARBERS.map((b) => (
-                <button
-                  key={b}
-                  onClick={() => { setSelectedBarber(b); setAdminTarget(null); setSelected(null); }}
-                  className={`px-5 py-2 rounded-lg font-medium text-sm transition-colors ${
-                    selectedBarber === b
-                      ? "bg-[#C6A75E] text-black"
-                      : "bg-[#1a1a1a] text-gray-400 hover:bg-[#252525] border border-[#3c3c3c]"
-                  }`}
-                >
-                  {b}
-                </button>
-              ))}
-            </div>
-          </div>
-          {/* Seletor de barbeiro — somente para admin */}
           {isAdmin && (
             <div className="space-y-2">
               <p className="text-gray-400 text-sm">Barbeiro:</p>
