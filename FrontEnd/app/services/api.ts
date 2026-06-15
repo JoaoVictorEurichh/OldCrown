@@ -103,6 +103,27 @@ export async function register(name: string, email: string, password: string) {
   return res.json();
 }
 
+export type BarberUser = { id: string; name: string; email: string; role: string };
+
+export async function getBarbers(): Promise<BarberUser[]> {
+  const res = await fetch("http://localhost:3333/users", { headers: authHeaders() });
+  if (!res.ok) return [];
+  const all: BarberUser[] = await res.json();
+  return all.filter((u) => u.role === "BARBER");
+}
+
+export async function criarBarbeiro(data: { name: string; email: string; password: string }) {
+  const res = await fetch("http://localhost:3333/users/barber", {
+    method: "POST",
+    headers: authHeaders(),
+    body: JSON.stringify(data),
+  });
+  if (res.status === 409) throw new Error("E-mail já cadastrado");
+  if (res.status === 403) throw new Error("Sem permissão");
+  if (!res.ok) throw new Error("Erro ao cadastrar barbeiro");
+  return res.json();
+}
+
 export type CurrentUser = {
   id: string;
   name: string;

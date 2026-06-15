@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { getAppointments, deleteAppointment, getCurrentUser, getBloqueios, type SlotBloqueado } from "@/app/services/api";
+import { getAppointments, deleteAppointment, getCurrentUser, getBloqueios, getBarbers, type SlotBloqueado } from "@/app/services/api";
 import { Lock } from "lucide-react";
 
 type Appointment = {
@@ -14,8 +14,6 @@ type Appointment = {
   barber: string;
   userId?: string;
 };
-
-const BARBERS = ["João", "Carlos", "Rafael"];
 
 const TIME_SLOTS: string[] = [];
 for (let h = 8; h < 18; h++) {
@@ -45,18 +43,24 @@ export default function Cancelar() {
   const isAdmin = currentUser?.role === "ADMIN";
   const isBarber = currentUser?.role === "BARBER";
 
+  const [barbers, setBarbers] = useState<string[]>([]);
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [bloqueios, setBloqueios] = useState<SlotBloqueado[]>([]);
-  const [selectedBarber, setSelectedBarber] = useState(BARBERS[0]);
+  const [selectedBarber, setSelectedBarber] = useState(
+    isBarber ? (currentUser?.name ?? "") : ""
+  );
   const [confirming, setConfirming] = useState<Appointment | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
   async function load() {
     try {
-      const [appts, blqs] = await Promise.all([getAppointments(), getBloqueios()]);
+      const [appts, blqs, bs] = await Promise.all([getAppointments(), getBloqueios(), getBarbers()]);
       setAppointments(appts);
       setBloqueios(blqs);
+      const names = bs.map((b) => b.name);
+      setBarbers(names);
+      if (!isBarber) setSelectedBarber((prev) => prev || names[0] || "");
     } catch {}
   }
 
@@ -118,8 +122,8 @@ export default function Cancelar() {
             {currentUser?.name}
           </div>
         ) : (
-          <div className="flex gap-3">
-            {BARBERS.map((b) => (
+          <div className="flex gap-3 flex-wrap">
+            {barbers.map((b) => (
               <button
                 key={b}
                 onClick={() => setSelectedBarber(b)}

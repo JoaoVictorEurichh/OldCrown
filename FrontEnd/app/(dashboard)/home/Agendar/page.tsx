@@ -8,6 +8,7 @@ import {
   createAppointment,
   getCurrentUser,
   getBloqueios,
+  getBarbers,
   criarBloqueio,
   removerBloqueio,
   type SlotBloqueado,
@@ -24,8 +25,6 @@ type Appointment = {
 };
 
 type Slot = { date: string; time: string };
-
-const BARBERS = ["João", "Carlos", "Rafael"];
 
 const TIME_SLOTS: string[] = [];
 for (let h = 8; h < 18; h++) {
@@ -56,14 +55,12 @@ export default function Agendar() {
   const isBarber = currentUser?.role === "BARBER";
   const canManageClients = isAdmin || isBarber;
 
-  // Barbeiro sempre usa o próprio nome; admin e cliente podem escolher
-  const defaultBarber = isBarber
-    ? (currentUser?.name ?? BARBERS[0])
-    : BARBERS[0];
-
+  const [barbers, setBarbers] = useState<string[]>([]);
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [bloqueios, setBloqueios] = useState<SlotBloqueado[]>([]);
-  const [selectedBarber, setSelectedBarber] = useState(defaultBarber);
+  const [selectedBarber, setSelectedBarber] = useState(
+    isBarber ? (currentUser?.name ?? "") : ""
+  );
   const [selected, setSelected] = useState<Slot | null>(null);
   const [clientName, setClientName] = useState("");
   const [service, setService] = useState("");
@@ -75,9 +72,16 @@ export default function Agendar() {
 
   async function load() {
     try {
-      const [appts, blqs] = await Promise.all([getAppointments(), getBloqueios()]);
+      const [appts, blqs, bs] = await Promise.all([
+        getAppointments(),
+        getBloqueios(),
+        getBarbers(),
+      ]);
       setAppointments(appts);
       setBloqueios(blqs);
+      const names = bs.map((b) => b.name);
+      setBarbers(names);
+      if (!isBarber && !selectedBarber) setSelectedBarber(names[0] ?? "");
     } catch {}
   }
 
@@ -179,9 +183,8 @@ export default function Agendar() {
     <div className="space-y-6">
       <h1 className="text-5xl font-bold text-[#C6A75E]">Agendar Cliente</h1>
 
-      {/* Seletor de barbeiro + modo bloquear (admin) */}
+      {/* Seletor de barbeiro + modo */}
       <div className="flex flex-wrap items-end gap-4">
-        {/* Barbeiro vê apenas o próprio nome */}
         {isBarber ? (
           <div className="space-y-2">
             <p className="text-gray-400 text-sm">Barbeiro:</p>
@@ -192,8 +195,8 @@ export default function Agendar() {
         ) : (
           <div className="space-y-2">
             <p className="text-gray-400 text-sm">Escolha o barbeiro:</p>
-            <div className="flex gap-3">
-              {BARBERS.map((b) => (
+            <div className="flex gap-3 flex-wrap">
+              {barbers.map((b) => (
                 <button
                   key={b}
                   onClick={() => { setSelectedBarber(b); setSelected(null); }}
@@ -210,7 +213,8 @@ export default function Agendar() {
           </div>
         )}
 
-        {isAdmin && (
+        {/* Modo bloquear — admin e barbeiro */}
+        {(isAdmin || isBarber) && (
           <div className="space-y-2">
             <p className="text-gray-400 text-sm">Modo:</p>
             <div className="flex gap-2">
@@ -275,7 +279,6 @@ export default function Agendar() {
                   const bloqueio = getBloqueioAt(d.date, time);
                   const past = isPast(d.date, time);
                   const isSelected = selected?.date === d.date && selected?.time === time;
-
                   const isBooked = !!appt;
                   const isBlocked = !!bloqueio;
 

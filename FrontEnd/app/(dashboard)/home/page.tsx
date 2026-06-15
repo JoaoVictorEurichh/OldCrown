@@ -416,8 +416,10 @@ export default function Home() {
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [loading, setLoading] = useState(true);
   const [notification, setNotification] = useState<string | null>(null);
+  const [currentUser, setCurrentUser] = useState<ReturnType<typeof getCurrentUser>>(null);
 
-  const currentUser = getCurrentUser();
+  useEffect(() => { setCurrentUser(getCurrentUser()); }, []);
+
   const isAdmin = currentUser?.role === "ADMIN";
   const today = new Date().toISOString().split("T")[0];
 
@@ -434,7 +436,7 @@ export default function Home() {
     const socket = io("http://localhost:3333");
 
     socket.on("appointment:created", (appt: Appointment) => {
-      if (isAdmin) {
+      if (getCurrentUser()?.role === "ADMIN") {
         setNotification(`Novo agendamento: ${appt.clientName} às ${appt.time}`);
         setTimeout(() => setNotification(null), 4000);
       }

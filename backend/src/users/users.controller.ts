@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, ForbiddenException, Get, Post, Req, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from '../guards/jwt-auth.guard';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UsersService } from './users.service';
@@ -9,7 +9,14 @@ export class UsersController {
 
   @Post()
   create(@Body() body: CreateUserDto) {
-    return this.usersService.create(body);
+    return this.usersService.create({ ...body, role: 'CUSTOMER' });
+  }
+
+  @Post('barber')
+  @UseGuards(JwtAuthGuard)
+  createBarber(@Body() body: { name: string; email: string; password: string }, @Req() req: any) {
+    if (req.user.role !== 'ADMIN') throw new ForbiddenException('Apenas administradores podem cadastrar barbeiros');
+    return this.usersService.create({ ...body, role: 'BARBER' });
   }
 
   @UseGuards(JwtAuthGuard)

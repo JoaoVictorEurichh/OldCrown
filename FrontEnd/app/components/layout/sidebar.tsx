@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { NavLink } from "../ui/nav-link";
-import { Home, BarChart2, LogOut, Scissors } from "lucide-react";
+import { Home, BarChart2, LogOut, Scissors, Users } from "lucide-react";
 import { getCurrentUser, type CurrentUser } from "@/app/services/api";
 
 export default function Sidebar({ children }: { children: React.ReactNode }) {
@@ -56,6 +56,13 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
             <Home size={17} />
             {homeLabel}
           </NavLink>
+
+          {isAdmin && (
+            <NavLink href="/barbeiros">
+              <Users size={17} />
+              Barbeiros
+            </NavLink>
+          )}
 
           {(isAdmin || isBarber) && (
             <NavLink href="/relatorios">

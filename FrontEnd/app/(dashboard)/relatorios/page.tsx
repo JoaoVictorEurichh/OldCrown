@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { getAppointments, getCurrentUser } from "@/app/services/api";
+import { getAppointments, getBarbers, getCurrentUser } from "@/app/services/api";
 import { TrendingUp, Scissors, DollarSign, Calendar } from "lucide-react";
 
 type Appointment = {
@@ -16,8 +16,6 @@ type Appointment = {
 };
 
 type Periodo = "semanal" | "mensal";
-
-const BARBERS = ["João", "Carlos", "Rafael"];
 
 const SERVICE_PRICE: Record<string, number> = {
   "Corte": 35,
@@ -243,7 +241,7 @@ function BarberReport({ appointments }: { appointments: Appointment[] }) {
 
 // ─── Vista do ADMIN ───────────────────────────────────────────────────────────
 
-function AdminReport({ appointments }: { appointments: Appointment[] }) {
+function AdminReport({ appointments, barbers }: { appointments: Appointment[]; barbers: string[] }) {
   const [periodo, setPeriodo] = useState<Periodo>("semanal");
 
   const range = getRange(periodo);
@@ -310,7 +308,7 @@ function AdminReport({ appointments }: { appointments: Appointment[] }) {
           Por Barbeiro
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          {BARBERS.map((barber) => {
+          {barbers.map((barber) => {
             const barberAppts = filtered.filter((a) => a.barber === barber);
             const stats = calcStats(barberAppts);
             const pct = totalStats.total > 0 ? Math.round((stats.total / totalStats.total) * 100) : 0;
@@ -381,6 +379,7 @@ function AdminReport({ appointments }: { appointments: Appointment[] }) {
 export default function Relatorios() {
   const router = useRouter();
   const [appointments, setAppointments] = useState<Appointment[]>([]);
+  const [barbers, setBarbers] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [role, setRole] = useState<string | null>(null);
 
@@ -391,8 +390,11 @@ export default function Relatorios() {
       return;
     }
     setRole(user.role);
-    getAppointments()
-      .then(setAppointments)
+    Promise.all([getAppointments(), getBarbers()])
+      .then(([appts, bs]) => {
+        setAppointments(appts);
+        setBarbers(bs.map((b) => b.name));
+      })
       .catch(() => {})
       .finally(() => setLoading(false));
   }, []);
@@ -406,5 +408,5 @@ export default function Relatorios() {
   }
 
   if (role === "BARBER") return <BarberReport appointments={appointments} />;
-  return <AdminReport appointments={appointments} />;
+  return <AdminReport appointments={appointments} barbers={barbers} />;
 }

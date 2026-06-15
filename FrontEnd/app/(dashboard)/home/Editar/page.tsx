@@ -2,10 +2,8 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { getAppointments, updateAppointment, getCurrentUser, getBloqueios, type SlotBloqueado } from "@/app/services/api";
+import { getAppointments, updateAppointment, getCurrentUser, getBloqueios, getBarbers, type SlotBloqueado } from "@/app/services/api";
 import { Lock } from "lucide-react";
-
-const BARBERS = ["João", "Carlos", "Rafael"];
 
 type Appointment = {
   id: string;
@@ -48,9 +46,12 @@ export default function Editar() {
   const isBarber = currentUser?.role === "BARBER";
   const canManageClients = isAdmin || isBarber;
 
+  const [barbers, setBarbers] = useState<string[]>([]);
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [bloqueios, setBloqueios] = useState<SlotBloqueado[]>([]);
-  const [selectedBarber, setSelectedBarber] = useState(BARBERS[0]);
+  const [selectedBarber, setSelectedBarber] = useState(
+    isBarber ? (currentUser?.name ?? "") : ""
+  );
   const [selected, setSelected] = useState<Slot | null>(null);
   const [adminTarget, setAdminTarget] = useState<Appointment | null>(null);
   const [saving, setSaving] = useState(false);
@@ -59,9 +60,12 @@ export default function Editar() {
 
   async function load() {
     try {
-      const [data, blqs] = await Promise.all([getAppointments(), getBloqueios()]);
+      const [data, blqs, bs] = await Promise.all([getAppointments(), getBloqueios(), getBarbers()]);
       setAppointments(data);
       setBloqueios(blqs);
+      const names = bs.map((b) => b.name);
+      setBarbers(names);
+      if (!isBarber) setSelectedBarber((prev) => prev || names[0] || "");
     } catch {}
   }
 
@@ -136,8 +140,8 @@ export default function Editar() {
           {isAdmin && (
             <div className="space-y-2">
               <p className="text-gray-400 text-sm">Barbeiro:</p>
-              <div className="flex gap-3">
-                {BARBERS.map((b) => (
+              <div className="flex gap-3 flex-wrap">
+                {barbers.map((b) => (
                   <button
                     key={b}
                     onClick={() => { setSelectedBarber(b); setAdminTarget(null); setSelected(null); }}
