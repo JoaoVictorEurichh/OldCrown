@@ -1,0 +1,14 @@
+{
+  "name": "bloco-de-notas-firestore-rules-tests",
+  "private": true,
+  "description": "Testes das regras de segurança do Firestore usando o Emulator Suite.",
+  "type": "module",
+  "scripts": {
+    "test": "firebase emulators:exec --only firestore --project demo-bloco-de-notas --config ../firebase.json \"node --test rules.test.mjs\""
+  },
+  "devDependencies": {
+    "@firebase/rules-unit-testing": "^5.0.2",
+    "firebase": "^12.19.0",
+    "firebase-tools": "^15.34.2"
+  }
+}
